@@ -1,5 +1,5 @@
 # Based on
-[tutorial](from https://github.com/jw84/messenger-bot-tutorial)
+[tutorial](https://github.com/jw84/messenger-bot-tutorial)
 # 🤖 Creating your own Facebook Messenger bot
 
 ![Alt text](/demo/Demo.gif)
