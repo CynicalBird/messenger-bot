@@ -61,6 +61,7 @@ app.post('/webhook/', function (req, res) {
 			console.log(text);
 			if (firstWord === "po" && secondWord === "weather")
 			{
+				//need to check if no city was provided
                 site = "api.openweathermap.org";
                 path = "/data/2.5/weather?q="+thirdWord+"&appid="+process.env.WEATHER_KEY;
                 let options = {
@@ -75,7 +76,8 @@ app.post('/webhook/', function (req, res) {
                 console.log(site+path);
                 getJSON(options, function (statusCode, response){
                     console.log("onResult: (" + statusCode + ")" + JSON.stringify(response));
-                    sendTextMessage(sender, "Here is your daily forcast: " + JSON.stringify(response));
+                    sendTextMessage(sender, "The weather in "+thirdWord+" is: " + JSON.stringify(response.weather.description)
+						+" and the temperature is: "+response.main.temp);
                 });
             }
             else if (firstWord === "po" && secondWord === "echo")
