@@ -65,7 +65,6 @@ app.post('/webhook/', function (req, res) {
                 path = "/data/2.5/weather?q="+thirdWord+"&appid="+process.env.WEATHER_KEY;
                 let options = {
                     host: site,
-                    port: 80,
                     path: path,
                     method: 'GET',
                     headers: {
