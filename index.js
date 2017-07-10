@@ -55,6 +55,7 @@ app.post('/webhook/', function (req, res) {
             let site = "";
             let path = "";
             let mode = "";
+            let commands = ["po weather", "po echo"];
 
 			console.log(text);
 			if (firstWord === "po" && secondWord === "weather")
@@ -80,7 +81,7 @@ app.post('/webhook/', function (req, res) {
             else if (firstWord === "po" && secondWord === "echo")
                 sendTextMessage(sender, "Text received, echo: " + text)
             else
-                sendTextMessage(sender, "Here are a list of commands: ");
+                sendTextMessage(sender, "Here are a list of commands: "+commands);
 		}
 
 		if (event.postback) {
