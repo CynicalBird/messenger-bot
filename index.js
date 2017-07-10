@@ -11,6 +11,7 @@ i have added console.log on line 48
 'use strict'
 
 const http = require('http')
+const https = require('https')
 const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
@@ -194,7 +195,7 @@ function getJSON(options, onResult)
     });
 
     req.on('error', function(err) {
-        //res.send('error: ' + err.message);
+        console.log('error: ' + err.message);
     });
 
     req.end();
