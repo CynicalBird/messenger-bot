@@ -10,6 +10,7 @@ i have added console.log on line 48
  */
 'use strict'
 
+const http = require('http')
 const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
@@ -52,29 +53,35 @@ app.post('/webhook/', function (req, res) {
 			let firstWord = text.split(" ")[0];
 			let secondWord = text.split(" ")[1];
             let thirdWord = text.split(" ")[2];
-            let URL = "";
+            let site = "";
+            let path = "";
             let mode = "";
 
 			console.log(text);
 			if (firstWord === "po" && secondWord === "weather")
 			{
-                URL = "http://api.openweathermap.org/data/2.5/weather?q="+thirdWord+"&appid="+process.env.WEATHER_KEY;
+                site = "http://api.openweathermap.org";
+                path = "/data/2.5/weather?q="+thirdWord+"&appid="+process.env.WEATHER_KEY;
                 mode = "weather";
             }
             else if (firstWord === "po" && secondWord === "echo")
                 sendTextMessage(sender, "Text received, echo: " + text)
             else
                 sendTextMessage(sender, "Here are a list of commands: ");
-            request.onreadystatechange = function() {
-				console.log(this.responseText);
-                if (this.readyState == 4 && this.status == 200) {
-                    response = this.responseText;
-                    if (mode === "weather")
-                    	sendTextMessage(sender, "Your forcast for today is: "+JSON.stringify(response));
+            let options = {
+                host: site,
+                port: 80,
+                path: path,
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
                 }
             };
-			request.open('GET', URL, true);
-			console.log(URL);
+			getJSON(options, function (statusCode, response){
+                console.log("onResult: (" + statusCode + ")" + JSON.stringify(response));
+                sendTextMessage(sender, "Here is your daily forcast: " + JSON.stringify(response));
+			});
+			console.log(site+path);
 			request.send();
 		}
 
@@ -165,3 +172,31 @@ function sendGenericMessage(sender) {
 app.listen(app.get('port'), function() {
 	console.log('running on port', app.get('port'))
 })
+
+function getJSON(options, onResult)
+{
+    console.log("rest::getJSON");
+
+    var prot = options.port == 443 ? https : http;
+    var req = prot.request(options, function(res)
+    {
+        var output = '';
+        console.log(options.host + ':' + res.statusCode);
+        res.setEncoding('utf8');
+
+        res.on('data', function (chunk) {
+            output += chunk;
+        });
+
+        res.on('end', function() {
+            var obj = JSON.parse(output);
+            onResult(res.statusCode, obj);
+        });
+    });
+
+    req.on('error', function(err) {
+        //res.send('error: ' + err.message);
+    });
+
+    req.end();
+};
