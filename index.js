@@ -43,18 +43,41 @@ app.get('/webhook/', function (req, res) {
 app.post('/webhook/', function (req, res) {
 	let messaging_events = req.body.entry[0].messaging
 	for (let i = 0; i < messaging_events.length; i++) {
-		let event = req.body.entry[0].messaging[i]
-		let sender = event.sender.id
+		let event = req.body.entry[0].messaging[i];
+		let sender = event.sender.id;
+        let request = new XMLHttpRequest();
+        let response = "";
 		if (event.message && event.message.text) {
-			let text = event.message.text
+			let text = event.message.text;
+			let firstWord = text.split(" ")[0];
+			let secondWord = text.split(" ")[1];
+            let thirdWord = text.split(" ")[2];
+            let URL = "";
+            let mode = "";
+
 			console.log(text);
-			if (text.split(" ")[0] === "po" && text.split(" ")[1] === "weather")
-				sendTextMessage(sender, "Your forcast for today is: ");
-            if (text.split(" ") === "help" ||(text.split(" ")[0] === "po" && text.split(" ")[1] === "help"))
+			if (firstWord === "po" && secondWord === "weather")
+			{
+                URL = "http://api.openweathermap.org/data/2.5/weather?q="+thirdWord+"&appid="+process.env.WEATHER_KEY;
+                mode = "weather";
+            }
+            else if (firstWord === "po" && secondWord === "echo")
+                sendTextMessage(sender, "Text received, echo: " + text)
+            else
                 sendTextMessage(sender, "Here are a list of commands: ");
-			else
-				sendTextMessage(sender, "Text received, echo: " + text)
+            request.onreadystatechange = function() {
+				console.log(this.responseText);
+                if (this.readyState == 4 && this.status == 200) {
+                    response = this.responseText;
+                    if (mode === "weather")
+                    	sendTextMessage(sender, "Your forcast for today is: "+JSON.stringify(response));
+                }
+            };
+			request.open('GET', URL, true);
+			console.log(URL);
+			request.send();
 		}
+
 		if (event.postback) {
 			let text = JSON.stringify(event.postback)
 			sendTextMessage(sender, "Postback received: "+text.substring(0, 200), token)
@@ -67,7 +90,7 @@ app.post('/webhook/', function (req, res) {
 
 // recommended to inject access tokens as environmental variables, e.g.
 // const token = process.env.FB_PAGE_ACCESS_TOKEN
-const token = process.env.FB_PAGE_ACCESS_TOKEN
+const token = process.env.FB_PAGE_ACCESS_TOKEN;
 
 function sendTextMessage(sender, text) {
 	let messageData = { text:text }
