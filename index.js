@@ -76,12 +76,11 @@ app.post('/webhook/', function (req, res) {
                     'Content-Type': 'application/json'
                 }
             };
+            console.log(site+path);
 			getJSON(options, function (statusCode, response){
                 console.log("onResult: (" + statusCode + ")" + JSON.stringify(response));
                 sendTextMessage(sender, "Here is your daily forcast: " + JSON.stringify(response));
 			});
-			console.log(site+path);
-			request.send();
 		}
 
 		if (event.postback) {
