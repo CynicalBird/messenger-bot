@@ -61,7 +61,7 @@ app.post('/webhook/', function (req, res) {
 			console.log(text);
 			if (firstWord === "po" && secondWord === "weather")
 			{
-                site = "http://api.openweathermap.org";
+                site = "api.openweathermap.org";
                 path = "/data/2.5/weather?q="+thirdWord+"&appid="+process.env.WEATHER_KEY;
                 let options = {
                     host: site,
