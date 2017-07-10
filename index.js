@@ -76,7 +76,7 @@ app.post('/webhook/', function (req, res) {
                 console.log(site+path);
                 getJSON(options, function (statusCode, response){
                     console.log("onResult: (" + statusCode + ")" + JSON.stringify(response));
-                    sendTextMessage(sender, "The weather in "+thirdWord+" is: " + JSON.stringify(response.weather.description)
+                    sendTextMessage(sender, "The weather in "+thirdWord+" is: " + response.weather.description
 						+" and the temperature is: "+response.main.temp);
                 });
             }
