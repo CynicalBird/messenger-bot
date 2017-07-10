@@ -62,6 +62,11 @@ app.post('/webhook/', function (req, res) {
                 site = "http://api.openweathermap.org";
                 path = "/data/2.5/weather?q="+thirdWord+"&appid="+process.env.WEATHER_KEY;
                 mode = "weather";
+                console.log(site+path);
+                getJSON(options, function (statusCode, response){
+                    console.log("onResult: (" + statusCode + ")" + JSON.stringify(response));
+                    sendTextMessage(sender, "Here is your daily forcast: " + JSON.stringify(response));
+                });
             }
             else if (firstWord === "po" && secondWord === "echo")
                 sendTextMessage(sender, "Text received, echo: " + text)
@@ -76,11 +81,6 @@ app.post('/webhook/', function (req, res) {
                     'Content-Type': 'application/json'
                 }
             };
-            console.log(site+path);
-			getJSON(options, function (statusCode, response){
-                console.log("onResult: (" + statusCode + ")" + JSON.stringify(response));
-                sendTextMessage(sender, "Here is your daily forcast: " + JSON.stringify(response));
-			});
 		}
 
 		if (event.postback) {
