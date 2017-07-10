@@ -61,6 +61,15 @@ app.post('/webhook/', function (req, res) {
 			{
                 site = "http://api.openweathermap.org";
                 path = "/data/2.5/weather?q="+thirdWord+"&appid="+process.env.WEATHER_KEY;
+                let options = {
+                    host: site,
+                    port: 80,
+                    path: path,
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
                 mode = "weather";
                 console.log(site+path);
                 getJSON(options, function (statusCode, response){
@@ -72,15 +81,6 @@ app.post('/webhook/', function (req, res) {
                 sendTextMessage(sender, "Text received, echo: " + text)
             else
                 sendTextMessage(sender, "Here are a list of commands: ");
-            let options = {
-                host: site,
-                port: 80,
-                path: path,
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            };
 		}
 
 		if (event.postback) {
